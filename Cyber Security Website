@@ -1,0 +1,175 @@
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+
+export default function CyberQuest2025() {
+  const [seats, setSeats] = useState(100);
+
+  // Matrix animation background effect
+  useEffect(() => {
+    const canvas = document.getElementById("matrix-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const letters = "01".split("");
+    const fontSize = 14;
+    let columns = Math.floor(width / fontSize);
+    let drops = Array(columns).fill(1);
+
+    let animationId = 0;
+    const draw = () => {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = "#00ffff";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      animationId = window.requestAnimationFrame(draw);
+    };
+
+    animationId = window.requestAnimationFrame(draw);
+
+    const onResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      columns = Math.floor(width / fontSize);
+      drops = Array(columns).fill(1);
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return (
+    <div className="relative bg-black text-white min-h-screen font-sans overflow-hidden">
+      {/* Matrix Background */}
+      <canvas id="matrix-canvas" className="absolute top-0 left-0 w-full h-full z-0" />
+      <div className="relative z-10">
+        {/* Navbar */}
+        <nav className="flex justify-between items-center p-4 bg-black/80 backdrop-blur-md border-b border-cyan-500">
+          <h1 className="glitch text-2xl font-bold text-cyan-400">CyberQuest 2025</h1>
+          <div className="space-x-6">
+            <a href="#about" className="hover:text-cyan-300">About</a>
+            <a href="#sponsors" className="hover:text-cyan-300">Sponsors</a>
+            <a href="#register" className="hover:text-cyan-300">Register</a>
+            <a href="#faqs" className="hover:text-cyan-300">FAQs</a>
+          </div>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="text-center py-20 bg-gradient-to-b from-black to-gray-900">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glitch text-5xl md:text-7xl font-extrabold text-cyan-400"
+          >
+            CyberQuest 2025 – Hands-on Cybersecurity Workshop
+          </motion.h2>
+          <p className="mt-4 text-lg text-cyan-200">April 29, 2025 · Mini Hall 2</p>
+          <button className="mt-6 neon-border bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-3 rounded-2xl">
+            Register Now
+          </button>
+          <p className="mt-3 text-sm text-cyan-300">₹100 Fee · 100 Seats · Certificate for All</p>
+        </section>
+
+        {/* About */}
+        <section id="about" className="p-10 text-center">
+          <h3 className="glitch text-3xl font-bold text-cyan-400 mb-6">About</h3>
+          <p className="max-w-2xl mx-auto text-gray-300">
+            CyberQuest 2025 is a one-day immersive workshop designed for students and early professionals eager to explore cybersecurity through hands-on sessions.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            {['Intro to Cybersecurity', 'Malware', 'Phishing', 'SSTV', 'Best Practices'].map((topic, i) => (
+              <div key={i} className="bg-gray-900 neon-border rounded-xl hover:scale-105 transition-transform duration-300">
+                <div className="p-6 text-lg text-center text-white">{topic}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sponsors */}
+        <section id="sponsors" className="p-10 text-center bg-gray-900">
+          <h3 className="glitch text-3xl font-bold text-cyan-400 mb-6">Sponsors</h3>
+          <div className="flex justify-center gap-10 flex-wrap">
+            {['Kyndryl', 'Cisco', 'Palo Alto Networks'].map((sponsor, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1 }}
+                className="bg-black px-8 py-4 rounded-xl neon-border text-white"
+              >
+                {sponsor}
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Register */}
+        <section id="register" className="p-10 text-center">
+          <h3 className="glitch text-3xl font-bold text-cyan-400 mb-6">Register</h3>
+          <p className="text-gray-300 mb-4">Secure your seat now! Limited spots available.</p>
+          <p className="text-lg text-cyan-300 mb-6">Seats left: {seats}</p>
+          <button className="neon-border bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-3 rounded-2xl">
+            Proceed to Register
+          </button>
+        </section>
+
+        {/* FAQs */}
+        <section id="faqs" className="p-10 bg-gray-900">
+          <h3 className="glitch text-3xl font-bold text-cyan-400 mb-6 text-center">FAQs</h3>
+          <div className="max-w-2xl mx-auto space-y-4">
+            {[
+              {q: "Do I need prior knowledge?", a: "No, beginners welcome."},
+              {q: "Will I get a certificate?", a: "Yes, for all participants."},
+              {q: "Is food provided?", a: "Yes, lunch & refreshments included."},
+            ].map((faq, i) => (
+              <details key={i} className="bg-black p-4 rounded-xl cursor-pointer neon-border">
+                <summary className="font-semibold text-cyan-300">{faq.q}</summary>
+                <p className="mt-2 text-gray-300">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="text-center py-6 border-t border-cyan-500 text-cyan-300">
+          © CyberQuest 2025. All Rights Reserved.
+        </footer>
+
+        {/* Inline CSS for glitch text + neon borders */}
+        <style>{`
+          .glitch:hover {
+            animation: glitch 0.7s infinite alternate;
+          }
+          @keyframes glitch {
+            0% { text-shadow: 0 0 2px #00ffff, 0 0 6px #00ffff; transform: skew(0deg); }
+            20% { text-shadow: -2px 0 #00ffff, 2px 0 #0066ff; transform: skew(-1deg); }
+            40% { text-shadow: 2px 0 #00ffff, -2px 0 #0066ff; transform: skew(1deg); }
+            60% { text-shadow: -1px 0 #00ffff, 1px 0 #0066ff; transform: skew(-0.5deg); }
+            80% { text-shadow: 1px 0 #00ffff, -1px 0 #0066ff; transform: skew(0.5deg); }
+            100% { text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff; transform: skew(0deg); }
+          }
+          .neon-border {
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0,255,255,0.35), inset 0 0 10px rgba(0,255,255,0.12);
+            transition: box-shadow .25s ease, transform .2s ease;
+          }
+          .neon-border:hover {
+            box-shadow: 0 0 18px rgba(0,255,255,0.65), 0 0 36px rgba(0,255,255,0.35), inset 0 0 16px rgba(0,255,255,0.22);
+            transform: translateY(-2px);
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}
